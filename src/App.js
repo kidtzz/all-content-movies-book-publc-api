@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./styles/css/navbar.min.css";
+import "./styles/css/heroku.min.css";
+import "./styles/css/app.min.css";
+import "./styles/css/movie.min.css";
+import "./styles/css/component.min.css";
+
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Footer from "./layouts/footer";
+import Navbar from "./layouts/navbar";
+import Book from "./pages/book";
+import Movie from "./pages/movie";
+// import Heroku from "./components/heroku";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div>
+            <Router>
+                <Navbar />
+                {/* <Heroku /> */}
+                <Routes>
+                    <Route path="/" element={<Movie />} />
+                    <Route path="/Book" element={<Book />} />
+                </Routes>
+                <Footer />
+            </Router>
+        </div>
+    );
 }
 
 export default App;
