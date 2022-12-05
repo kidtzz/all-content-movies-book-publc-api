@@ -28,17 +28,22 @@ function Navbar() {
                             <ul className="navbar-nav justify-content-center me-auto mb-2 mb-lg-0">
                                 <li className="nav-item">
                                     <Link className="nav-link " to="/">
-                                        Home
-                                    </Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link " to="/Movie">
                                         Movies
                                     </Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link className="nav-link " to="/Book">
                                         Book
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link " to="/Quran">
+                                        Quran
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link " to="/random">
+                                        random content
                                     </Link>
                                 </li>
                             </ul>

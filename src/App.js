@@ -9,6 +9,10 @@ import Footer from "./layouts/footer";
 import Navbar from "./layouts/navbar";
 import Book from "./pages/book";
 import Movie from "./pages/movie";
+import Quran from "./pages/quran/quran";
+import DetailQuran from "./pages/quran/detailQuran";
+import Random from "./pages/random/random";
+
 // import Heroku from "./components/heroku";
 
 function App() {
@@ -20,6 +24,9 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Movie />} />
                     <Route path="/Book" element={<Book />} />
+                    <Route path="/Quran" element={<Quran />} />
+                    <Route path="/Quran/:number" element={<DetailQuran />} />
+                    <Route path="/random" element={<Random />} />
                 </Routes>
                 <Footer />
             </Router>
