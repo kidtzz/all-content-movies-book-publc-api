@@ -46,6 +46,11 @@ function Navbar() {
                                         random content
                                     </Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link " to="/Skyshi">
+                                        Skyshi
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
                     </div>
