@@ -1,52 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Controls from "../../components";
 import { FaRegTrashAlt } from "react-icons/fa";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteSky, getIdSky, getSky } from "../../redux/action/actionSky";
+import { ModalPop } from "../../components/modal";
 import { useState } from "react";
 
 function Skyshi() {
-    const [dataG, setDataG] = useState();
-    const getData = async () => {
-        try {
-            const data = await axios.get(
-                "https://todo.api.devcode.gethired.id/activity-groups/"
-            );
-            setDataG(data.data.data);
-        } catch (error) {
-            console.log(error);
-        }
+    const { getListSkyResult, getListSkyLoading, getListSkyError } =
+        useSelector((state) => state.reducerSky);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getSky());
+    }, [dispatch]);
+
+    const navigate = useNavigate();
+    const detailSky = (dataQ) => {
+        navigate(`/DetailSky/${dataQ.title.replace(/ /g, "-")}`);
+        dispatch(getIdSky(dataQ));
     };
-    useState(() => {
-        getData();
-    }, []);
 
-    const currentDate = new Date();
-    // const options = {
-    //     day: "numeric",
-    //     month: "short",
-    //     year: "numeric",
-    // };
-    const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
+    const [idDel, setIDDelete] = useState();
 
-    console.log("mon?", monthNames[currentDate.getMonth()]);
-    console.log("day", monthNames[currentDate.getDay()]);
-
-    // console.log(currentDate.toLocaleDateString("id-ID", options));
-
-    // console.log("date?", dataG?.created_at);
+    const handleDetele = () => {
+        dispatch(deleteSky(idDel.id));
+    };
 
     return (
         <>
@@ -61,32 +42,96 @@ function Skyshi() {
                 </div>
                 <div className="content">
                     <div className="row">
-                        {dataG?.map((item, index) => {
-                            return (
-                                <div className="col-lg-3 mb-4" key={index}>
-                                    <div className="card  p-3 text-dark">
-                                        <div className="card-title">
-                                            <h5>{item.title}</h5>
-                                        </div>
-                                        <div className="card-body"></div>
-                                        <div className="card-bawah d-flex">
-                                            <div className="date mx-1">
-                                                <p>{item.created_at}</p>
+                        {getListSkyResult ? (
+                            <>
+                                {getListSkyResult.data?.map((item, index) => {
+                                    const dateG = item.created_at;
+                                    const myDate = new Date(dateG);
+                                    const day = myDate.getDate();
+                                    const month = myDate.getMonth();
+                                    const year = myDate.getFullYear();
+                                    const monthNames = [
+                                        "Januari",
+                                        "Febuari",
+                                        "Maret",
+                                        "April",
+                                        "Mei",
+                                        "Juni",
+                                        "Juli",
+                                        "Agustus",
+                                        "September",
+                                        "Oktober",
+                                        "November",
+                                        "Desember",
+                                    ];
+
+                                    const resultDate =
+                                        day +
+                                        " " +
+                                        monthNames[month] +
+                                        " " +
+                                        year;
+
+                                    return (
+                                        <div
+                                            className="col-lg-3 col-md-4 mb-4"
+                                            key={index}
+                                        >
+                                            <div className="card  p-3 text-dark">
+                                                <div className="card-title">
+                                                    <h5
+                                                        href=" "
+                                                        className="cur-pointer text-dark text-decoration-none"
+                                                        onClick={() =>
+                                                            detailSky(item)
+                                                        }
+                                                    >
+                                                        {item.title}
+                                                    </h5>
+                                                </div>
+                                                <div className="card-body"></div>
+                                                <div className="card-bawah d-flex">
+                                                    <div className="date mx-1">
+                                                        <p>{resultDate}</p>
+                                                    </div>
+                                                    <div className="card-body"></div>
+                                                    <div className="icon-button mx-1">
+                                                        <i
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#exampleModal"
+                                                            onClick={() =>
+                                                                setIDDelete(
+                                                                    item
+                                                                )
+                                                            }
+                                                        >
+                                                            <FaRegTrashAlt />
+                                                        </i>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="card-body"></div>
-                                            <div className="icon-button mx-1">
-                                                <a href="/#">
-                                                    <FaRegTrashAlt />
-                                                </a>
-                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                    );
+                                })}
+                            </>
+                        ) : getListSkyLoading ? (
+                            <p> Loading Data ...</p>
+                        ) : (
+                            <p>
+                                {getListSkyError
+                                    ? getListSkyLoading
+                                    : "data Loading..."}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
+            <ModalPop
+                exampleModal="exampleModal"
+                onConfirm={handleDetele}
+                modalTitle={<>Delete Data</>}
+                modalBody={<>Yakin Mau delete?</>}
+            />
         </>
     );
 }
