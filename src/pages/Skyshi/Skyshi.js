@@ -4,12 +4,16 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSky, getIdSky, getSky } from "../../redux/action/actionSky";
-import { ModalPop } from "../../components/modal";
+import { ModalAdd, ModalPop } from "../../components/modal";
 import { useState } from "react";
 
 function Skyshi() {
-    const { getListSkyResult, getListSkyLoading, getListSkyError } =
-        useSelector((state) => state.reducerSky);
+    const {
+        getListSkyResult,
+        getListSkyLoading,
+        getListSkyError,
+        deleteSkyResult,
+    } = useSelector((state) => state.reducerSky);
 
     const dispatch = useDispatch();
 
@@ -29,6 +33,12 @@ function Skyshi() {
         dispatch(deleteSky(idDel.id));
     };
 
+    useEffect(() => {
+        if (deleteSkyResult) {
+            dispatch(getSky());
+        }
+    }, [deleteSkyResult, dispatch]);
+
     return (
         <>
             <div className="container my-5">
@@ -36,7 +46,11 @@ function Skyshi() {
                     <div className="title">
                         <h2>Activity</h2>
                     </div>
-                    <div className="button-tambah">
+                    <div
+                        className="button-tambah btn-add"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalAdd"
+                    >
                         <Controls.ButtonCus>Tambah</Controls.ButtonCus>
                     </div>
                 </div>
@@ -48,6 +62,7 @@ function Skyshi() {
                                     const dateG = item.created_at;
                                     const myDate = new Date(dateG);
                                     const day = myDate.getDate();
+
                                     const month = myDate.getMonth();
                                     const year = myDate.getFullYear();
                                     const monthNames = [
@@ -66,7 +81,7 @@ function Skyshi() {
                                     ];
 
                                     const resultDate =
-                                        day +
+                                        ("0" + day).slice(-2) +
                                         " " +
                                         monthNames[month] +
                                         " " +
@@ -78,6 +93,7 @@ function Skyshi() {
                                             key={index}
                                         >
                                             <div className="card  p-3 text-dark">
+                                                <p>{item.id}</p>
                                                 <div className="card-title">
                                                     <h5
                                                         href=" "
@@ -97,6 +113,7 @@ function Skyshi() {
                                                     <div className="card-body"></div>
                                                     <div className="icon-button mx-1">
                                                         <i
+                                                            className="cur-pointer "
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#exampleModal"
                                                             onClick={() =>
@@ -131,6 +148,10 @@ function Skyshi() {
                 onConfirm={handleDetele}
                 modalTitle={<>Delete Data</>}
                 modalBody={<>Yakin Mau delete?</>}
+            />
+            <ModalAdd
+                exampleModal="ModalAdd"
+                modalTitle={<>Tambah Activity</>}
             />
         </>
     );

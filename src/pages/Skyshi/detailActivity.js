@@ -1,53 +1,92 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaAngleLeft, FaPencilAlt } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
 import Controls from "../../components";
 import { useNavigate } from "react-router-dom";
-import { ModalAdd } from "../../components/modal";
+import { ModalAddTodo, ModalDelete } from "../../components/modal";
+import { deleteTodo, getIdTodo, getTodo } from "../../redux/action/actionSky";
+import { BsTrash } from "react-icons/bs";
 
 function DetailActivity() {
     const [tit, setTitle] = useState();
-    // const [edit, setEdit] = useState(false);
-    const { getIdSkyResult } = useSelector((state) => state.reducerSky);
+    const [idact, setIdAct] = useState();
+    const {
+        getIdSkyResult,
+        getListTodoResult,
+        getListTodoLoading,
+        getListTodoError,
+        addTodoResult,
+        deleteTodoResult,
+        updateTodoResult,
+    } = useSelector((state) => state.reducerSky);
+    const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (getIdSkyResult) {
-            setTitle(getIdSkyResult.title);
-        }
-    }, [getIdSkyResult]);
-
-    const handleEdit = () => {
-        // setEdit(true);
-    };
-
+    //control Backk
     const navigate = useNavigate();
     const handleBack = () => {
         navigate("/Skyshi");
     };
 
+    //get Activity-Group
+    useEffect(() => {
+        if (getIdSkyResult) {
+            setTitle(getIdSkyResult.title);
+            setIdAct(getIdSkyResult.id);
+        }
+    }, [getIdSkyResult]);
+
+    //Get All Todo-Items ini tapi knapa BUG ya
+    useEffect(() => {
+        dispatch(getTodo(idact));
+    }, [dispatch, idact]);
+
+    //Get When Add
+    useEffect(() => {
+        if (addTodoResult) {
+            dispatch(getTodo(idact));
+        }
+    }, [dispatch, addTodoResult, idact]);
+
+    //edit-todoo
+    const handleEditTodo = (idT) => {
+        dispatch(getIdTodo(idT));
+    };
+    useEffect(() => {
+        if (updateTodoResult) {
+            dispatch(getTodo(idact));
+        }
+    }, [dispatch, updateTodoResult, idact]);
+
+    //Delete
+    const [idTodo, setIdTodo] = useState();
+    const handleDelete = () => {
+        dispatch(deleteTodo(idTodo.id));
+    };
+    useEffect(() => {
+        if (deleteTodoResult) {
+            dispatch(getTodo(idact));
+        }
+    }, [dispatch, deleteTodoResult, idact]);
+
     return (
         <>
-            <div className="container">
-                <h2>test</h2>
+            <div className="container my-5">
                 <div className="d-flex justify-content-between">
                     <div className="header-left d-flex">
                         <div className="btn-back align-items-center mx-1">
                             <FaAngleLeft onClick={handleBack} />
                         </div>
 
-                        <div className="title-activity" contentEditable>
-                            <h3>{tit}</h3>
+                        <div className="title-activity">
+                            <h2>{tit}</h2>
                         </div>
 
                         <div className="btn-edit mx-2">
-                            <FaPencilAlt
-                                className="cus-pointer"
-                                onClick={handleEdit}
-                            />
+                            <FaPencilAlt className="cus-pointer" />
                         </div>
                     </div>
                     <div className="header-right d-flex">
@@ -57,7 +96,7 @@ function DetailActivity() {
                         <div
                             className="btn-add"
                             data-bs-toggle="modal"
-                            data-bs-target="#ModalAdd"
+                            data-bs-target="#ModalAddTodo"
                         >
                             <Controls.ButtonCus>
                                 <AiOutlinePlus className="mx-2" />
@@ -66,8 +105,89 @@ function DetailActivity() {
                         </div>
                     </div>
                 </div>
+                <div className="content-body my-5">
+                    <div className="row">
+                        {getListTodoResult ? (
+                            <>
+                                {getListTodoResult.data?.map((item, index) => {
+                                    return (
+                                        <div
+                                            className="col-lg-12 my-2"
+                                            key={index}
+                                        >
+                                            <div className="card bg-light text-dark  py-2">
+                                                <div className="container">
+                                                    <div className="d-flex justify-content-between">
+                                                        <div className="side-title d-flex">
+                                                            <div className="checkbox-todo mx-2">
+                                                                <input type="checkbox" />
+                                                            </div>
+                                                            <div className="title-todo mx-2 align-items-center">
+                                                                <h6 className="pt-1">
+                                                                    {item.title}
+                                                                </h6>
+                                                            </div>
+                                                            <div className="edit-todo">
+                                                                <i
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#ModalAddTodo"
+                                                                    onClick={() => {
+                                                                        handleEditTodo(
+                                                                            item
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <FaPencilAlt
+                                                                        size={
+                                                                            12
+                                                                        }
+                                                                    />
+                                                                </i>
+                                                            </div>
+                                                        </div>
+                                                        <div className="right-content">
+                                                            <i
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#ModalDelete"
+                                                                onClick={() => {
+                                                                    setIdTodo(
+                                                                        item
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <BsTrash />
+                                                            </i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        ) : getListTodoLoading ? (
+                            <>Loading Data...</>
+                        ) : (
+                            <p>
+                                {getListTodoError
+                                    ? getListTodoLoading
+                                    : "Loading Data..."}
+                            </p>
+                        )}
+                    </div>
+                </div>
             </div>
-            <ModalAdd exampleModal="ModalAdd" modalTitle={<>Tambah Todo</>} />
+            <ModalAddTodo
+                exampleModal="ModalAddTodo"
+                modalTitle={<>Tambah Todo-List</>}
+                idTodo={idact}
+            />
+            <ModalDelete
+                modalTitle={<>Delete Todo</>}
+                handleSubmit={handleDelete}
+                exampleModal="ModalDelete"
+                bodyContent={<>Yakin Mau delete ini?</>}
+            />
         </>
     );
 }
