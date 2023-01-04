@@ -16,6 +16,7 @@ import DetailQuran from "./pages/quran/detailQuran";
 import Random from "./pages/random/random";
 import Skyshi from "./pages/Skyshi/Skyshi";
 import DetailActivity from "./pages/Skyshi/detailActivity";
+import Trycatch from "./pages/Temp/Trycatch";
 
 // import Heroku from "./components/heroku";
 
@@ -34,6 +35,7 @@ function App() {
                     <Route path="/random" element={<Random />} />
                     <Route path="/Skyshi" element={<Skyshi />} />
                     <Route path="/DetailSky/:id" element={<DetailActivity />} />
+                    <Route path="/Trycatch" element={<Trycatch />} />
                 </Routes>
                 <Footer />
             </Router>

@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaAngleLeft, FaPencilAlt } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
-import Controls from "../../components";
 import { useNavigate } from "react-router-dom";
 import { ModalAddTodo, ModalDelete } from "../../components/modal";
 import { deleteTodo, getIdTodo, getTodo } from "../../redux/action/actionSky";
 import { BsTrash } from "react-icons/bs";
+import Controls from "../../components";
 
 function DetailActivity() {
     const [tit, setTitle] = useState();
@@ -38,8 +38,9 @@ function DetailActivity() {
             setIdAct(getIdSkyResult.id);
         }
     }, [getIdSkyResult]);
+    console.log("id?", idact);
 
-    //Get All Todo-Items ini tapi knapa BUG ya
+    //Get All Todo-Items ini tapi K
     useEffect(() => {
         dispatch(getTodo(idact));
     }, [dispatch, idact]);
@@ -71,6 +72,16 @@ function DetailActivity() {
             dispatch(getTodo(idact));
         }
     }, [dispatch, deleteTodoResult, idact]);
+
+    const [boxCheck, setBoxCheck] = useState(false);
+    const handleCheckBox = (item, e) => {
+        console.log("id?", item.id);
+        if (e.target.checked) {
+            setBoxCheck(true);
+        } else {
+            setBoxCheck(false);
+        }
+    };
 
     return (
         <>
@@ -120,12 +131,32 @@ function DetailActivity() {
                                                     <div className="d-flex justify-content-between">
                                                         <div className="side-title d-flex">
                                                             <div className="checkbox-todo mx-2">
-                                                                <input type="checkbox" />
+                                                                <input
+                                                                    type="checkbox"
+                                                                    onChange={() => {
+                                                                        handleCheckBox(
+                                                                            item
+                                                                        );
+                                                                    }}
+                                                                />
                                                             </div>
-                                                            <div className="title-todo mx-2 align-items-center">
-                                                                <h6 className="pt-1">
-                                                                    {item.title}
-                                                                </h6>
+                                                            <div className="title-todo mx-2 align-items-center d-flex align-items-center">
+                                                                <div
+                                                                    className={`label-indicator mx-2 ${item.priority}`}
+                                                                ></div>
+                                                                <div>
+                                                                    <h6
+                                                                        className={
+                                                                            boxCheck
+                                                                                ? "p-1 strikethrough italic"
+                                                                                : boxCheck
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            item.title
+                                                                        }
+                                                                    </h6>
+                                                                </div>
                                                             </div>
                                                             <div className="edit-todo">
                                                                 <i

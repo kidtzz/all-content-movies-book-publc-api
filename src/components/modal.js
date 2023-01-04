@@ -144,11 +144,11 @@ export function ModalAdd({ exampleModal, modalTitle }) {
 
 //Modal Todo
 //Datenya belum
+//Optionnya masih Bug ini bro gj
 export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
     const [title, setTitle] = useState("");
     const [priority, setPriority] = useState("");
     const [idT, setIdt] = useState();
-
     const { getIdTodoResult } = useSelector((state) => state.reducerSky);
     const dispatch = useDispatch();
 
@@ -162,6 +162,7 @@ export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
                     title: title,
                     is_active: true,
                     priority: priority,
+
                     created_at: "2022-12-17T07:39:50.150Z",
                     updated_at: "2022-12-17T07:39:50.150Z",
                 })
@@ -191,10 +192,31 @@ export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
         }
     }, [getIdTodoResult]);
 
-    useEffect(() => {
-        setTitle("");
-        setPriority("");
-    }, []);
+    console.log("prior?", priority);
+
+    const optionPrio = [
+        {
+            label: "Very High",
+            value: "very-high",
+        },
+        {
+            label: "High",
+            value: "high",
+        },
+        {
+            label: "Medium",
+            value: "normal",
+        },
+        {
+            label: "Low",
+            value: "low",
+        },
+        {
+            label: "Very Low",
+            value: "very-low",
+        },
+    ];
+
     return (
         <div className="container">
             <div
@@ -235,17 +257,41 @@ export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
                                 />
                             </div>
 
+                            <label className="form-label">Priority</label>
+
+                            <div
+                                className={
+                                    priority
+                                        ? `label-indicator mx-2 ${priority}`
+                                        : priority
+                                }
+                            ></div>
                             <select
                                 className="form-select form-select-md mb-3"
-                                aria-label=".form-select-lg example"
+                                aria-label="form-select-lg example"
                                 onChange={(e) => setPriority(e.target.value)}
                                 value={priority}
                             >
-                                <option>Very High</option>
-                                <option>High</option>
-                                <option>Medium</option>
-                                <option>Low</option>
-                                <option className="d-flex">Very Low</option>
+                                {optionPrio?.map((opt) => {
+                                    return (
+                                        <option
+                                            value={
+                                                priority
+                                                    ? opt.value
+                                                    : priority
+                                                    ? priority
+                                                    : opt.value
+                                            }
+                                            key={opt.id}
+                                        >
+                                            <div className="d-flex">
+                                                <div className="label ">
+                                                    {opt.label}
+                                                </div>
+                                            </div>
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                         <div className="modal-footer">
@@ -328,4 +374,48 @@ export function ModalDelete({
             </div>
         </div>
     );
+}
+
+{
+    /* <div className="dropdown">
+                                <div
+                                    className="btn border px-3 "
+                                    data-bs-toggle="dropdown"
+                                    onChange={(e) =>
+                                        setPriority(e.target.value)
+                                    }
+                                    value={priority}
+                                >
+                                    ---Select---
+                                </div>
+
+                                <ul className="dropdown-menu px-2">
+                                    {optionPrio.map((opt) => {
+                                        return (
+                                            <li
+                                                value={
+                                                    priority
+                                                        ? opt.value
+                                                        : priority
+                                                        ? priority
+                                                        : opt.value
+                                                }
+                                                key={opt.id}
+                                                className="cur-pointer"
+                                            >
+                                                <div className="dropdown-item d-flex align-items-center ">
+                                                    <span
+                                                        className={
+                                                            priority
+                                                                ? `label-indicator mx-2 ${priority}`
+                                                                : priority
+                                                        }
+                                                    ></span>
+                                                    <span>{opt.label}</span>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div> */
 }
