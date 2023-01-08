@@ -8,7 +8,13 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { ModalAddTodo, ModalDelete } from "../../components/modal";
 import { deleteTodo, getIdTodo, getTodo } from "../../redux/action/actionSky";
-import { BsTrash } from "react-icons/bs";
+import {
+    BsTrash,
+    BsSortAlphaDown,
+    BsSortAlphaUpAlt,
+    BsSortUpAlt,
+    BsSortDown,
+} from "react-icons/bs";
 import Controls from "../../components";
 
 function DetailActivity() {
@@ -38,7 +44,7 @@ function DetailActivity() {
             setIdAct(getIdSkyResult.id);
         }
     }, [getIdSkyResult]);
-    console.log("id?", idact);
+    // console.log("id?", idact);
 
     //Get All Todo-Items ini tapi K
     useEffect(() => {
@@ -73,15 +79,36 @@ function DetailActivity() {
         }
     }, [dispatch, deleteTodoResult, idact]);
 
-    const [boxCheck, setBoxCheck] = useState(false);
+    const [objSort, setObjSort] = useState();
+    const shortMethod = {
+        Terbaru: { method: (a, b) => b.id - a.id },
+        Terlama: { method: (a, b) => a.id - b.id },
+        AZ: { method: (a, b) => (a.title > b.title ? 1 : -1) },
+        ZA: { method: (a, b) => (a.title > b.title ? -1 : 1) },
+    };
+
+    const [ital, setItal] = useState();
+    const [tod, setTod] = useState();
+    const [tangkap, setTangkap] = useState();
     const handleCheckBox = (item, e) => {
-        console.log("id?", item.id);
-        if (e.target.checked) {
-            setBoxCheck(true);
+        console.log("apa?", item);
+        const newTodo = () => {
+            if (item.id) {
+                return { ...item, is_active: !item.is_active };
+            }
+            return item;
+        };
+        setTod(newTodo);
+        setTangkap(tod.is_active);
+        if (e.target.checked && tod.is_active === false) {
+            setItal("strikethrough italic");
         } else {
-            setBoxCheck(false);
+            setItal("");
         }
     };
+    // console.log("ini ital?", tangkap);
+    // console.log("apa ni?", tod);
+    //harus namabahi true false.nya ini sih di is_active
 
     return (
         <>
@@ -102,7 +129,62 @@ function DetailActivity() {
                     </div>
                     <div className="header-right d-flex">
                         <div className="short-icon">
-                            <BiSortAlt2 />
+                            <div className="dropdown">
+                                <div
+                                    className="btn btn-primary  bg-none px-3 "
+                                    data-bs-toggle="dropdown"
+                                >
+                                    <BiSortAlt2 />
+                                </div>
+
+                                <ul className="dropdown-menu px-2">
+                                    <li
+                                        className="cur-pointer"
+                                        onClick={() => setObjSort("Terbaru")}
+                                    >
+                                        <div className="dropdown-item d-flex align-items-center ">
+                                            <BsSortDown />
+                                            <span className="px-2">
+                                                Terbaru
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li
+                                        className="cur-pointer"
+                                        onClick={() => setObjSort("Terlama")}
+                                    >
+                                        <div className="dropdown-item d-flex align-items-center ">
+                                            <BsSortUpAlt />
+                                            <span className="px-2">
+                                                Terlama
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li
+                                        className="cur-pointer"
+                                        onClick={() => setObjSort("AZ")}
+                                    >
+                                        <div className="dropdown-item d-flex align-items-center ">
+                                            <BsSortAlphaDown />
+                                            <span className="px-2">A-Z</span>
+                                        </div>
+                                    </li>
+                                    <li
+                                        className="cur-pointer"
+                                        onClick={() => setObjSort("ZA")}
+                                    >
+                                        <div className="dropdown-item d-flex align-items-center ">
+                                            <BsSortAlphaUpAlt />
+                                            <span className="px-2">Z-A</span>
+                                        </div>
+                                    </li>
+                                    <li className="cur-pointer">
+                                        <div className="dropdown-item d-flex align-items-center ">
+                                            <span>Belum Selesai</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div
                             className="btn-add"
@@ -120,81 +202,86 @@ function DetailActivity() {
                     <div className="row">
                         {getListTodoResult ? (
                             <>
-                                {getListTodoResult.data?.map((item, index) => {
-                                    return (
-                                        <div
-                                            className="col-lg-12 my-2"
-                                            key={index}
-                                        >
-                                            <div className="card bg-light text-dark  py-2">
-                                                <div className="container">
-                                                    <div className="d-flex justify-content-between">
-                                                        <div className="side-title d-flex">
-                                                            <div className="checkbox-todo mx-2">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    onChange={() => {
-                                                                        handleCheckBox(
-                                                                            item
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                            <div className="title-todo mx-2 align-items-center d-flex align-items-center">
-                                                                <div
-                                                                    className={`label-indicator mx-2 ${item.priority}`}
-                                                                ></div>
-                                                                <div>
-                                                                    <h6
-                                                                        className={
-                                                                            boxCheck
-                                                                                ? "p-1 strikethrough italic"
-                                                                                : boxCheck
-                                                                        }
+                                {getListTodoResult.data
+                                    ?.sort(shortMethod[objSort]?.method)
+                                    .map((item, index) => {
+                                        return (
+                                            <div
+                                                className="col-lg-12 my-2"
+                                                key={index}
+                                            >
+                                                <div className="card bg-light text-dark  py-2">
+                                                    <div className="container">
+                                                        <div className="d-flex justify-content-between">
+                                                            <div className="side-title d-flex">
+                                                                <div className="checkbox-todo mx-2">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        onChange={(
+                                                                            e
+                                                                        ) => {
+                                                                            handleCheckBox(
+                                                                                item,
+                                                                                e
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="title-todo mx-2 align-items-center d-flex align-items-center">
+                                                                    <div
+                                                                        className={`label-indicator mx-2 ${item.priority}`}
+                                                                    ></div>
+                                                                    <div>
+                                                                        <h6
+                                                                            className={
+                                                                                tangkap
+                                                                                    ? ital
+                                                                                    : `p-1 ${ital}`
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                item.title
+                                                                            }
+                                                                        </h6>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="edit-todo">
+                                                                    <i
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#ModalAddTodo"
+                                                                        onClick={() => {
+                                                                            handleEditTodo(
+                                                                                item
+                                                                            );
+                                                                        }}
                                                                     >
-                                                                        {
-                                                                            item.title
-                                                                        }
-                                                                    </h6>
+                                                                        <FaPencilAlt
+                                                                            size={
+                                                                                12
+                                                                            }
+                                                                        />
+                                                                    </i>
                                                                 </div>
                                                             </div>
-                                                            <div className="edit-todo">
+                                                            <div className="right-content">
                                                                 <i
                                                                     data-bs-toggle="modal"
-                                                                    data-bs-target="#ModalAddTodo"
+                                                                    data-bs-target="#ModalDelete"
                                                                     onClick={() => {
-                                                                        handleEditTodo(
+                                                                        setIdTodo(
                                                                             item
                                                                         );
                                                                     }}
                                                                 >
-                                                                    <FaPencilAlt
-                                                                        size={
-                                                                            12
-                                                                        }
-                                                                    />
+                                                                    <BsTrash />
                                                                 </i>
                                                             </div>
-                                                        </div>
-                                                        <div className="right-content">
-                                                            <i
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#ModalDelete"
-                                                                onClick={() => {
-                                                                    setIdTodo(
-                                                                        item
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <BsTrash />
-                                                            </i>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
                             </>
                         ) : getListTodoLoading ? (
                             <>Loading Data...</>
