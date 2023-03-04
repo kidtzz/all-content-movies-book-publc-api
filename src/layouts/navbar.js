@@ -26,7 +26,7 @@ function Navbar() {
                             id="navbarSupportedContent"
                         >
                             <ul className="navbar-nav justify-content-center me-auto mb-2 mb-lg-0">
-                                {/* <li className="nav-item">
+                                <li className="nav-item">
                                     <Link className="nav-link " to="/">
                                         Movies
                                     </Link>
@@ -40,7 +40,7 @@ function Navbar() {
                                     <Link className="nav-link " to="/Quran">
                                         Quran
                                     </Link>
-                                </li> */}
+                                </li>
                                 <li className="nav-item">
                                     <Link className="nav-link " to="/random">
                                         random content

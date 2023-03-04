@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addSky, addTodo, getSky, updateTodo } from "../redux/action/actionSky";
 
-export function ModalPop({ onConfirm, modalTitle, exampleModal, modalBody }) {
+export function ModalDelete({
+    onConfirm,
+    modalTitle,
+    exampleModal,
+    modalBody,
+    btnColor,
+}) {
     return (
         <div className="container">
             <div
@@ -42,7 +48,7 @@ export function ModalPop({ onConfirm, modalTitle, exampleModal, modalBody }) {
                             </button>
                             <button
                                 type="button"
-                                className="btn btn-primary"
+                                className={`btn ${btnColor}`}
                                 data-bs-dismiss="modal"
                                 onClick={onConfirm}
                             >
@@ -193,22 +199,27 @@ export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
 
     const optionPrio = [
         {
+            id: 1,
             label: "Very High",
             value: "very-high",
         },
         {
+            id: 2,
             label: "High",
             value: "high",
         },
         {
+            id: 3,
             label: "Medium",
             value: "normal",
         },
         {
+            id: 4,
             label: "Low",
             value: "low",
         },
         {
+            id: 5,
             label: "Very Low",
             value: "very-low",
         },
@@ -316,7 +327,7 @@ export function ModalAddTodo({ exampleModal, modalTitle, idTodo }) {
 }
 
 //Modal Delete
-export function ModalDelete({
+export function ModalDeleteTodo({
     exampleModal,
     modalTitle,
     handleSubmit,

@@ -6,7 +6,7 @@ import { FaAngleLeft, FaPencilAlt } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { ModalAddTodo, ModalDelete } from "../../components/modal";
+import { ModalAddTodo, ModalDeleteTodo } from "../../components/modal";
 import { deleteTodo, getIdTodo, getTodo } from "../../redux/action/actionSky";
 import {
     BsTrash,
@@ -14,6 +14,7 @@ import {
     BsSortAlphaUpAlt,
     BsSortUpAlt,
     BsSortDown,
+    BsCursorText,
 } from "react-icons/bs";
 import Controls from "../../components";
 
@@ -85,6 +86,7 @@ function DetailActivity() {
         Terlama: { method: (a, b) => a.id - b.id },
         AZ: { method: (a, b) => (a.title > b.title ? 1 : -1) },
         ZA: { method: (a, b) => (a.title > b.title ? -1 : 1) },
+        Update: { method: (a, b) => b.updated_at - a.updated_at },
     };
 
     const [ital, setItal] = useState();
@@ -94,12 +96,12 @@ function DetailActivity() {
         console.log("apa?", item);
         const newTodo = () => {
             if (item.id) {
-                return { ...item, is_active: !item.is_active };
+                return { ...item, is_active: !item?.is_active };
             }
             return item;
         };
         setTod(newTodo);
-        setTangkap(tod.is_active);
+        setTangkap(tod?.is_active || "");
         if (e.target.checked && tod.is_active === false) {
             setItal("strikethrough italic");
         } else {
@@ -178,9 +180,15 @@ function DetailActivity() {
                                             <span className="px-2">Z-A</span>
                                         </div>
                                     </li>
-                                    <li className="cur-pointer">
+                                    <li
+                                        className="cur-pointer"
+                                        onClick={() => setObjSort("Update")}
+                                    >
                                         <div className="dropdown-item d-flex align-items-center ">
-                                            <span>Belum Selesai</span>
+                                            <BsCursorText />
+                                            <span className="px-2">
+                                                Update By
+                                            </span>
                                         </div>
                                     </li>
                                 </ul>
@@ -300,7 +308,7 @@ function DetailActivity() {
                 modalTitle={<>Tambah Todo-List</>}
                 idTodo={idact}
             />
-            <ModalDelete
+            <ModalDeleteTodo
                 modalTitle={<>Delete Todo</>}
                 handleSubmit={handleDelete}
                 exampleModal="ModalDelete"

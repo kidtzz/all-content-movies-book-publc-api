@@ -4,7 +4,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteSky, getIdSky, getSky } from "../../redux/action/actionSky";
-import { ModalAdd, ModalPop } from "../../components/modal";
+import { ModalAdd, ModalDelete } from "../../components/modal";
 import { useState } from "react";
 
 function Skyshi() {
@@ -143,11 +143,12 @@ function Skyshi() {
                     </div>
                 </div>
             </div>
-            <ModalPop
+            <ModalDelete
                 exampleModal="exampleModal"
                 onConfirm={handleDetele}
                 modalTitle={<>Delete Data</>}
                 modalBody={<>Yakin Mau delete?</>}
+                btnColor={"btn-danger"}
             />
             <ModalAdd
                 exampleModal="ModalAdd"
